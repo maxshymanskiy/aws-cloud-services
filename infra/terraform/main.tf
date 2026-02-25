@@ -69,6 +69,5 @@ module "lambda_functions" {
   table_name      = each.value.table_name
   dynamodb_action = each.value.action
   source_file     = "${path.root}/modules/lambda/functions/${each.key}.mjs"
-  
-  context = module.base_label.context 
+  context         = module.base_label.context
 }
