@@ -1,3 +1,4 @@
+# Create GET method for /courses/{id} resource
 resource "aws_api_gateway_method" "get_course_id" {
   rest_api_id   = aws_api_gateway_rest_api.this.id
   resource_id   = aws_api_gateway_resource.course_id.id
@@ -14,6 +15,7 @@ resource "aws_api_gateway_integration" "get_course_id" {
   uri                     = var.lambda_invoke_arns["get-course"]
 }
 
+# Create PUT method for /courses/{id} resource
 resource "aws_api_gateway_method" "put_course_id" {
   rest_api_id   = aws_api_gateway_rest_api.this.id
   resource_id   = aws_api_gateway_resource.course_id.id
@@ -30,6 +32,7 @@ resource "aws_api_gateway_integration" "put_course_id" {
   uri                     = var.lambda_invoke_arns["update-course"]
 }
 
+# Create DELETE method for /courses/{id} resource
 resource "aws_api_gateway_method" "delete_course_id" {
   rest_api_id   = aws_api_gateway_rest_api.this.id
   resource_id   = aws_api_gateway_resource.course_id.id

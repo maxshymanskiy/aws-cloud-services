@@ -1,3 +1,4 @@
+# Define CORS settings for API Gateway resources
 locals {
   cors_headers = {
     "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
@@ -11,7 +12,7 @@ locals {
   }
 }
 
-# /authors
+# Create OPTIONS method for /authors resource
 resource "aws_api_gateway_method" "options_authors" {
   rest_api_id   = aws_api_gateway_rest_api.this.id
   resource_id   = aws_api_gateway_resource.authors.id
@@ -52,7 +53,7 @@ resource "aws_api_gateway_integration_response" "options_authors_200" {
   depends_on = [aws_api_gateway_integration.options_authors]
 }
 
-# /courses
+# Create OPTIONS method for /courses resource
 resource "aws_api_gateway_method" "options_courses" {
   rest_api_id   = aws_api_gateway_rest_api.this.id
   resource_id   = aws_api_gateway_resource.courses.id
@@ -93,7 +94,7 @@ resource "aws_api_gateway_integration_response" "options_courses_200" {
   depends_on = [aws_api_gateway_integration.options_courses]
 }
 
-# /courses/{id}
+# Create OPTIONS method for /courses/{id} resource
 resource "aws_api_gateway_method" "options_course_id" {
   rest_api_id   = aws_api_gateway_rest_api.this.id
   resource_id   = aws_api_gateway_resource.course_id.id

@@ -1,3 +1,4 @@
+# Give permissions to every lambda function to be invoked by API Gateway
 resource "aws_lambda_permission" "apigw" {
   for_each = var.lambda_function_names
 
