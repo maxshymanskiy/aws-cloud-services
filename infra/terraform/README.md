@@ -200,3 +200,42 @@ Use the following JSON payloads to test Lambda functions directly via the AWS Co
   "id": "clean-architecture-patterns-practices-principles"
 }
 ```
+
+## 6. API Gateway
+
+The `api_gateway` module provisions an AWS REST API Gateway that exposes all Lambda functions over HTTP. It is wired up automatically from the root module using the invoke ARNs and function names produced by the `lambda_functions` module.
+
+### Resource Structure
+
+| Path | Methods |
+|---|---|
+| `/authors` | `GET` |
+| `/courses` | `GET`, `POST` |
+| `/courses/{id}` | `GET`, `PUT`, `DELETE` |
+
+All resources also expose an `OPTIONS` method to support CORS preflight requests from the React frontend.
+
+### CORS
+
+CORS is handled via `MOCK` integrations on every `OPTIONS` method. The allowed origin is set to `*`. Each resource advertises only the methods it actually supports through the `Access-Control-Allow-Methods` response header.
+
+### Deployment and Stage
+
+The API is deployed to a stage named `v1`. A `triggers` block on the deployment resource computes a hash of all method and integration IDs, forcing a new deployment whenever any route changes.
+
+> **Tip:** If you need to force a manual redeployment without changing any routes, `terraform taint` the `aws_api_gateway_deployment.this` resource and re-apply.
+
+```bash
+terraform taint module.api_gateway.aws_api_gateway_deployment.this
+terraform apply
+```
+
+### Retrieving the Invoke URL
+
+After a successful `terraform apply`, the base URL of the deployed stage is available as an output.
+
+```bash
+terraform output api_invoke_url
+```
+
+The returned URL has the form `https://<api-id>.execute-api.<region>.amazonaws.com/v1`. Append a resource path to call an endpoint directly.
