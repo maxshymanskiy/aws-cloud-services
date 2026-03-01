@@ -71,3 +71,18 @@ module "lambda_functions" {
   source_file     = "${path.root}/modules/lambda/functions/${each.key}.mjs"
   context         = module.base_label.context
 }
+
+# Featching API Gateway invoke ARNs and function names to pass to the API Gateway module
+module "api_gateway" {
+  source = "./modules/api_gateway"
+
+  context = module.base_label.context
+
+  lambda_invoke_arns = {
+    for k, v in module.lambda_functions : k => v.invoke_arn
+  }
+
+  lambda_function_names = {
+    for k, v in module.lambda_functions : k => v.function_name
+  }
+}
