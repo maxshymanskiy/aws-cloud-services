@@ -1,43 +1,41 @@
 # react-app-frontend
 
-A React + Redux CRUD app for managing courses and authors, with a local Express API server.
+A React + Redux CRUD app for managing courses and authors. Backend is AWS API Gateway + Lambda + DynamoDB.
+
+> Deployment is handled by Terraform — see [`infra/terraform/README.md`](../infra/terraform/README.md).
 
 ## Requirements
 
 - [Node.js](https://nodejs.org/en/download/) >= 20
 
-## Install & Run
+## Local Development
 
-### 1. Install frontend dependencies
+Change `src/api/serverUrl.js` to localhost:
 
-```bash
-npm install --legacy-peer-deps
+```javascript
+export const serverUrl = 'http://localhost:3001';
 ```
 
-### 2. Install server dependencies
+Then install dependencies and start the app:
 
 ```bash
-cd server
 npm install
-```
-
-### 3. Start the API server
-
-```bash
-# in the server/ directory
-npm start
-```
-
-The server runs on **http://localhost:4000**.
-
-### 4. Start the frontend
-
-```bash
-# back in the root directory
 npm start
 ```
 
 The app opens at **http://localhost:3000**.
+
+## Deployment
+
+Change `src/api/serverUrl.js` to the deployed API Gateway URL:
+
+```js
+export const serverUrl = 'https://your-api-gateway-url.amazonaws.com/prod';
+```
+or 
+```js
+export default process.env.REACT_APP_API_URL;
+```
 
 ## API Endpoints
 
@@ -49,8 +47,4 @@ The app opens at **http://localhost:3000**.
 | POST | `/courses` | Create a course |
 | PUT | `/courses/:id` | Update a course |
 | DELETE | `/courses/:id` | Delete a course |
-
-## Using a different API
-
-Change the URL in `src/api/serverUrl.js` to point to your own backend.
 
