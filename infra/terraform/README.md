@@ -239,3 +239,43 @@ terraform output api_invoke_url
 ```
 
 The returned URL has the form `https://<api-id>.execute-api.<region>.amazonaws.com/v1`. Append a resource path to call an endpoint directly.
+
+## 7. S3 Frontend
+
+The `s3-frontend` module provisions static hosting for the React SPA and automatically builds and deploys it as part of `terraform apply`.
+
+### Build and Deploy
+
+The `null_resource` provisioner runs automatically when:
+- The API Gateway invoke URL changes (the `REACT_APP_API_URL` env var embedded at build time would differ)
+- Any file under `react-app-frontend/src/` or `react-app-frontend/public/` changes
+
+The build steps executed locally are:
+```bash
+npm ci --legacy-peer-deps
+npm run build
+aws s3 sync build/ s3://<bucket> --delete
+aws cloudfront create-invalidation --distribution-id <id> --paths "/*"
+```
+
+### SPA Routing
+
+CloudFront is configured with `custom_error_response` blocks for both 403 and 404 errors from S3, returning `index.html` with status 200. This is required so that hard refreshes and direct links to React Router paths (e.g. `/course/abc`) load the app instead of returning an S3 error page.
+
+### Outputs
+
+After a successful `terraform apply`:
+
+```bash
+terraform output cloudfront_url
+```
+
+Returns the HTTPS CloudFront URL where the app is accessible.
+
+### Forcing a Redeploy
+
+If you need to force a rebuild and sync without changing any source files:
+
+```bash
+aws-vault exec <profile> --no-session -- terraform apply -replace=module.s3_frontend.null_resource.build_and_deploy
+```

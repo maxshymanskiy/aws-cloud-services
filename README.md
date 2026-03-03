@@ -9,12 +9,13 @@ The system utilizes a cloud-native architecture designed for scalability and mai
 - **Frontend**: Single Page Application (SPA) built with React and Redux.
 - **Backend**: Serverless architecture using AWS Lambda functions.
 - **Database**: NoSQL data storage using Amazon DynamoDB.
+- **Hosting**: React SPA served globally via Amazon CloudFront backed by an S3 bucket.
 - **Infrastructure**: Infrastructure as Code (IaC) managed via Terraform.
 
 ## Repository Structure
 
 - `react-app-frontend/`: Contains the source code for the user interface, state management, and API integration.
-- `infra/`: Contains Terraform configuration files for provisioning AWS resources, including DynamoDB tables, IAM roles, and Lambda functions.
+- `infra/`: Contains Terraform configuration files for provisioning AWS resources, including DynamoDB tables, IAM roles, Lambda functions, S3 bucket, and CloudFront distribution.
 
 ## Features
 
@@ -22,65 +23,31 @@ The system utilizes a cloud-native architecture designed for scalability and mai
 - **Author Management**: Retrieve author details.
 - **Serverless Compute**: Backend logic executes on demand without managing servers.
 - **Persistent Storage**: Data is stored reliably in DynamoDB tables.
+- **Static Hosting**: Frontend is built and deployed to S3/CloudFront automatically on every `terraform apply`.
 
 ## Getting Started
 
-### Infrastructure Deployment
+### Deployment
 
-The storage and compute resources must be provisioned before running the application.
+All infrastructure and the frontend are provisioned with a single Terraform apply. See [`infra/terraform/README.md`](infra/terraform/README.md) for full details.
 
-1. Navigate to the infrastructure directory:
-   ```bash
-   cd infra/terraform
-   ```
+```bash
+cd infra/terraform
+terraform init -backend-config=backend.config
+aws-vault exec <profile> --no-session -- terraform apply
+```
 
-2. Initialize Terraform:
-   ```bash
-   terraform init -backend-config=backend.config
-   ```
+After apply, Terraform prints the live URL.
 
-3. Apply the configuration to create AWS resources:
-   ```bash
-   terraform apply
-   ```
+### Local Frontend Development
 
-### Application Setup
+```bash
+cd react-app-frontend
+npm install
+npm start
+```
 
-The application consists of a frontend React app and a local Node.js server (mock API) for development.
-
-1. **Start the Mock API Server**:
-
-   Open a new terminal and navigate to the server directory:
-   ```bash
-   cd react-app-frontend/server
-   ```
-
-   Install dependencies:
-   ```bash
-   npm install
-   ```
-
-   Start the server (runs on port 4000):
-   ```bash
-   npm start
-   ```
-
-2. **Start the Frontend Application**:
-
-   Open another terminal and navigate to the frontend directory:
-   ```bash
-   cd react-app-frontend
-   ```
-
-   Install dependencies:
-   ```bash
-   npm install
-   ```
-
-   Start the development server:
-   ```bash
-   npm start
-   ```
+See [`react-app-frontend/README.md`](react-app-frontend/README.md) for details.
 
 ## License
 
