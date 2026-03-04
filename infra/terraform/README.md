@@ -152,6 +152,7 @@ Use the following JSON payloads to test Lambda functions directly via the AWS Co
 ### Save Course
 
 **Function**: `save-course`
+
 **Input**:
 
 ```json
@@ -166,11 +167,13 @@ Use the following JSON payloads to test Lambda functions directly via the AWS Co
 ### Update Course
 
 **Function**: `update-course`
+
+**Path parameter**: `id` = `clean-architecture-patterns-practices-principles`
+
 **Input**:
 
 ```json
 {
-  "id": "clean-architecture-patterns-practices-principles",
   "title": "Clean Architecture: Patterns, Practices, and Principles (Updated)",
   "watchHref": "http://www.pluralsight.com/courses/clean-architecture-patterns-practices-principles",
   "authorId": "matthew-renze",
@@ -182,24 +185,18 @@ Use the following JSON payloads to test Lambda functions directly via the AWS Co
 ### Delete Course
 
 **Function**: `delete-course`
-**Input**:
 
-```json
-{
-  "id": "clean-architecture-patterns-practices-principles"
-}
-```
+**Path parameter**: `id` = `clean-architecture-patterns-practices-principles`
+
+**Input**: none
 
 ### Get Course
 
 **Function**: `get-course`
-**Input**:
 
-```json
-{
-  "id": "clean-architecture-patterns-practices-principles"
-}
-```
+**Path parameter**: `id` = `clean-architecture-patterns-practices-principles`
+
+**Input**: none
 
 ## 6. API Gateway
 
