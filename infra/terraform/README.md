@@ -276,3 +276,22 @@ If you need to force a rebuild and sync without changing any source files:
 ```bash
 aws-vault exec <profile> --no-session -- terraform apply -replace=module.s3_frontend.null_resource.build_and_deploy
 ```
+
+## 8. Monitoring
+
+The `monitoring` module sets up CloudWatch alarms and SNS email notifications to alert on Lambda errors and unexpected AWS billing charges.
+
+### Alarms
+
+| Alarm | Source | Threshold | Period |
+|---|---|---|---|
+| Per-function error alarm | CloudWatch Logs metric filter (pattern: `ERROR`) | ≥ 1 error | 30 seconds |
+| Billing alarm | `AWS/Billing` — `EstimatedCharges` | ≥ `billing_threshold` USD | 6 hours |
+
+Each Lambda function gets its own CloudWatch Log metric filter that counts log lines matching `ERROR`. A corresponding alarm fires when at least one such count is recorded within the evaluation period. All alarms route to a single SNS topic.
+
+### SNS Notifications
+
+A single SNS topic is shared by all alarms. One email subscription is created using the `alert_email` variable. After the first `terraform apply`, AWS sends a confirmation email to that address — the subscription must be confirmed before any notifications are delivered.
+
+> **Tip:** To update the billing threshold or alert email without rebuilding other infrastructure, change the variable value and run `terraform apply` — only the affected CloudWatch/SNS resources will be modified.
