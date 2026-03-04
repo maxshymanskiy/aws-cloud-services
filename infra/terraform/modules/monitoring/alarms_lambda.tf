@@ -21,7 +21,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
   evaluation_periods  = 1
   metric_name         = aws_cloudwatch_log_metric_filter.lambda_errors[each.key].metric_transformation[0].name
   namespace           = aws_cloudwatch_log_metric_filter.lambda_errors[each.key].metric_transformation[0].namespace
-  period              = 30 # every minute
+  period              = 30 # evaluate every 30 seconds to catch errors quickly
   statistic           = "Sum"
   threshold           = 1
   alarm_description   = "Fires when function ${each.key} logs at least one ERROR per minute"
