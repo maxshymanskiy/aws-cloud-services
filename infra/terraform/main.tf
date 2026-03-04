@@ -95,3 +95,15 @@ module "s3_frontend" {
   api_url       = module.api_gateway.invoke_url
   react_app_dir = "${path.root}/../../react-app-frontend"
 }
+
+# Monitoring: billing alarm + per-Lambda error alarms + SNS email notifications
+module "monitoring" {
+  source = "./modules/monitoring"
+
+  context     = module.base_label.context
+  alert_email = "maksym.shymanskyi.ri.2024@lpnu.ua" 
+
+  lambda_function_names = {
+    for k, v in module.lambda_functions : k => v.function_name
+  }
+}
