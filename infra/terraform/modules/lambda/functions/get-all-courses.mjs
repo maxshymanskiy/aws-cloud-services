@@ -13,7 +13,13 @@ const response = (statusCode, body) => ({
   body: JSON.stringify(body),
 });
 
-export const handler = async () => {
+export const handler = async (event) => {
+  // Demo hook: GET /courses?forceError=true  →  logs ERROR and returns 500
+  if (event.queryStringParameters?.forceError === "true") {
+    console.error("DEMO: forced error triggered via ?forceError=true");
+    return response(500, { message: "Forced error for alarm demonstration" });
+  }
+
   try {
     const { Items = [] } = await docClient.send(
       new ScanCommand({ TableName: process.env.TABLE_NAME })
